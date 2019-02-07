@@ -14,7 +14,7 @@ func main() {
 }
 
 func getLanguages() {
-    u, _ := url.Parse("https://api.cognitive.microsofttranslator.com//languages")
+    u, _ := url.Parse("https://api.cognitive.microsofttranslator.com/languages")
     q := u.Query()
     q.Add("api-version", "3.0")
     u.RawQuery = q.Encode()

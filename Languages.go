@@ -1,4 +1,3 @@
-
 package main
 
 import (    
@@ -6,7 +5,8 @@ import (
     "fmt"
     "log"
     "net/http"
-    "net/url"    
+    "net/url"
+	"os"
 )
 
 func main() {
@@ -14,9 +14,15 @@ func main() {
 }
 
 func getLanguages() {
-    u, _ := url.Parse("https://api.cognitive.microsofttranslator.com/languages")
+	if "" == os.Getenv("TRANSLATOR_TEXT_ENDPOINT") {
+		log.Fatal("Please set/export the environment variable TRANSLATOR_TEXT_ENDPOINT.")
+	}
+	var uriBase string = os.Getenv("TRANSLATOR_TEXT_ENDPOINT")
+	const uriPath = "/languages?api-version=3.0"
+    var uri string = uriBase + uriPath
+
+    u, _ := url.Parse(uri)
     q := u.Query()
-    q.Add("api-version", "3.0")
     u.RawQuery = q.Encode()
     
     req, err := http.NewRequest("GET", u.String(), nil)

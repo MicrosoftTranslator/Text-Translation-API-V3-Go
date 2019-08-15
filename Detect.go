@@ -4,20 +4,26 @@ import (
     "encoding/json"
     "fmt"
     "io/ioutil"
+	"log"
     "net/http"
+	"os"
     "strconv"
     "strings"
     "time"
 )
 
 func main() {
-    // Replace the subscriptionKey string value with your valid subscription key
-    const subscriptionKey = "<Subscription Key>"
+	if "" == os.Getenv("TRANSLATOR_TEXT_SUBSCRIPTION_KEY") {
+		log.Fatal("Please set/export the environment variable TRANSLATOR_TEXT_SUBSCRIPTION_KEY.")
+	}
+	var subscriptionKey string = os.Getenv("TRANSLATOR_TEXT_SUBSCRIPTION_KEY")
+	if "" == os.Getenv("TRANSLATOR_TEXT_ENDPOINT") {
+		log.Fatal("Please set/export the environment variable TRANSLATOR_TEXT_ENDPOINT.")
+	}
+	var uriBase string = os.Getenv("TRANSLATOR_TEXT_ENDPOINT")
 
-	const uriBase = "https://api.cognitive.microsofttranslator.com"
 	const uriPath = "/detect?api-version=3.0"
-
-    const uri = uriBase + uriPath
+    var uri string = uriBase + uriPath
 
     const text = "Salve, mondo!"
 

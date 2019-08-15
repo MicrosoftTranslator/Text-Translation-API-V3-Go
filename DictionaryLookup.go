@@ -1,65 +1,76 @@
 package main
 
 import (
+    "bytes"
     "encoding/json"
     "fmt"
-    "io/ioutil"
+    "log"
     "net/http"
-    "strconv"
-    "strings"
-    "time"
+    "net/url"
+    "os"
 )
 
 func main() {
-    // Replace the subscriptionKey string value with your valid subscription key
-    const subscriptionKey = "<Subscription Key>"
-
-	const uriBase = "https://api.cognitive.microsofttranslator.com"
-	const uriPath = "/dictionary/lookup?api-version=3.0"
-
-	// From English to French
-	const params = "&from=en&to=fr"
-	
-    const uri = uriBase + uriPath + params
-
-    const text = "great"
-
-    r := strings.NewReader("[{\"Text\" : \"" + text + "\"}]")
-
-    client := &http.Client{
-        Timeout: time.Second * 2,
+    /*
+    * Read your subscription key from an env variable.
+    * Please note: You can replace this code block with
+    * var subscriptionKey = "YOUR_SUBSCRIPTION_KEY" if you don't
+    * want to use env variables. If so, be sure to delete the "os" import.
+    */
+    if "" == os.Getenv("TRANSLATOR_TEXT_SUBSCRIPTION_KEY") {
+      log.Fatal("Please set/export the environment variable TRANSLATOR_TEXT_SUBSCRIPTION_KEY.")
     }
+    subscriptionKey := os.Getenv("TRANSLATOR_TEXT_SUBSCRIPTION_KEY")
+    if "" == os.Getenv("TRANSLATOR_TEXT_ENDPOINT") {
+      log.Fatal("Please set/export the environment variable TRANSLATOR_TEXT_ENDPOINT.")
+    }
+    endpoint := os.Getenv("TRANSLATOR_TEXT_ENDPOINT")
+    uri := endpoint + "/dictionary/lookup?api-version=3.0"
+    /*
+     * This calls our breakSentence function, which we'll
+     * create in the next section. It takes a single argument,
+     * the subscription key.
+     */
+    dictionaryLookup(subscriptionKey, uri)
+}
 
-    req, err := http.NewRequest("POST", uri, r)
+func dictionaryLookup(subscriptionKey string, uri string) {
+    // Build the request URL. See: https://golang.org/pkg/net/url/#example_URL_Parse
+    u, _ := url.Parse(uri)
+    q := u.Query()
+    q.Add("from", "en")
+    q.Add("to", "es")
+    u.RawQuery = q.Encode()
+
+    // Create an anonymous struct for your request body and encode it to JSON
+    body := []struct {
+        Text string
+    }{
+        {Text: "Pineapples"},
+    }
+    b, _ := json.Marshal(body)
+
+    // Build the HTTP POST request
+    req, err := http.NewRequest("POST", u.String(), bytes.NewBuffer(b))
     if err != nil {
-        fmt.Printf("Error creating request: %v\n", err)
-        return
+        log.Fatal(err)
     }
-
-    req.Header.Add("Content-Type", "application/json")
-    req.Header.Add("Content-Length", strconv.FormatInt(req.ContentLength, 10))
+    // Add required headers to the request
     req.Header.Add("Ocp-Apim-Subscription-Key", subscriptionKey)
+    req.Header.Add("Content-Type", "application/json")
 
-    resp, err := client.Do(req)
+    // Call the Translator Text API
+    res, err := http.DefaultClient.Do(req)
     if err != nil {
-        fmt.Printf("Error on request: %v\n", err)
-        return
-    }
-    defer resp.Body.Close()
-
-    body, err := ioutil.ReadAll(resp.Body)
-    if err != nil {
-        fmt.Printf("Error reading response body: %v\n", err)
-        return
+        log.Fatal(err)
     }
 
-    var f interface{}
-    json.Unmarshal(body, &f)
-
-    jsonFormatted, err := json.MarshalIndent(f, "", "  ")
-    if err != nil {
-        fmt.Printf("Error producing JSON: %v\n", err)
-        return
+    // Decode the JSON response
+    var result interface{}
+    if err := json.NewDecoder(res.Body).Decode(&result); err != nil {
+    	log.Fatal(err)
     }
-    fmt.Println(string(jsonFormatted))
+    // Format and print the response to terminal
+    prettyJSON, _ := json.MarshalIndent(result, "", "  ")
+    fmt.Printf("%s\n", prettyJSON)
 }

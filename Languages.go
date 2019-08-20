@@ -1,28 +1,33 @@
 
 package main
 
-import (    
+import (
     "encoding/json"
     "fmt"
     "log"
     "net/http"
-    "net/url"    
+    "net/url"
+    "os"
 )
 
 func main() {
-   getLanguages()
+    if "" == os.Getenv("TRANSLATOR_TEXT_ENDPOINT") {
+      log.Fatal("Please set/export the environment variable TRANSLATOR_TEXT_ENDPOINT.")
+    }
+    endpoint := os.Getenv("TRANSLATOR_TEXT_ENDPOINT")
+    uri := endpoint + "/languages?api-version=3.0"
+    getLanguages(uri)
 }
 
-func getLanguages() {
-    u, _ := url.Parse("https://api.cognitive.microsofttranslator.com/languages")
+func getLanguages(uri string) {
+    u, _ := url.Parse(uri)
     q := u.Query()
-    q.Add("api-version", "3.0")
     u.RawQuery = q.Encode()
-    
+
     req, err := http.NewRequest("GET", u.String(), nil)
     if err != nil {
         log.Fatal(err)
-    }    
+    }
     req.Header.Add("Content-Type", "application/json")
 
     res, err := http.DefaultClient.Do(req)

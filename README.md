@@ -1,4 +1,17 @@
-# Text-Translation-API-V3-Go
+---
+page_type: sample
+name: Microsoft Translator Go samples (v3)
+description: This repository includes Go code samples for Microsoft Translator. 
+urlFragment: translator-go-v3
+languages:
+- go
+products:
+- azure
+- azure-cognitive-services
+- azure-translator
+---
+
+# Translator API V3 - Go Samples
 
 ## Prerequisites
 
@@ -18,4 +31,4 @@ The code in this repository contains examples for all of the Microsoft Text Tran
 6. Build the file, for example: 'go build example-code.go'.
 7. Run the file, for example: 'example-code'.
 
-[Translator Text API Reference](https://docs.microsoft.com/en-us/azure/cognitive-services/translator/)
+[Translator v3 API Reference](https://docs.microsoft.com/en-us/azure/cognitive-services/translator/)

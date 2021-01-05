@@ -13,6 +13,17 @@ products:
 
 # Translator API V3 - Go Samples
 
+This repository includes Go code samples for Microsoft Translator. Each sample corresponds to a **Quickstart** activity on [doc.microsoft.com](https://docs.microsoft.com/azure/cognitive-services/translator/), including:
+
+* Translating text
+* Transliterating text
+* Identifying the language of source text
+* Getting alternate translations
+* Getting a complete list of supported languages
+* Determining sentence length
+
+[Get started with the Translator quickstart](https://docs.microsoft.com/azure/cognitive-services/translator/quickstart-translator).
+
 ## Prerequisites
 
 * You'll need to install the [Go distribution](https://golang.org/doc/install) in order to run this code. The sample code uses only **core** libraries, so there are no external dependencies.

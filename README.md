@@ -15,9 +15,9 @@ products:
 
 ## Prerequisites
 
-You'll need to install the [Go distribution](https://golang.org/doc/install) in order to run this code. The sample code uses only **core** libraries, so there are no external dependencies.
-
-You must have a Cognitive Services API account with Microsoft Translator Text API. You'll need a paid subscription key from your Azure dashboard.
+* You'll need to install the [Go distribution](https://golang.org/doc/install) in order to run this code. The sample code uses only **core** libraries, so there are no external dependencies.
+* An Azure subscription - [Sign-up for a free account](https://docs.microsoft.com/azure/cognitive-services/translator/translator-text-how-to-signup)!
+* A Translator resource - [Create a Translator resource](https://ms.portal.azure.com/#create/Microsoft.CognitiveServicesTextTranslation)
 
 ## Code samples
 
